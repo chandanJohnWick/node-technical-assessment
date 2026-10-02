@@ -17,6 +17,14 @@ Build and run the compiled app:
     npm run build
     npm start
 
+## Deploy free on Render
+
+1. Create a MongoDB Atlas free cluster and copy its connection URI. Add `0.0.0.0/0` to Atlas Network Access only if Render's outbound IPs cannot be allowlisted; use a database user with access only to this app's database.
+2. In Render, choose **New → Blueprint**, connect this GitHub repository, and select `render.yaml`.
+3. When prompted, enter the Atlas URI for `MONGODB_URI` as a secret. Deploy the Blueprint and wait for `/api/health` to pass.
+
+Render free web services sleep after inactivity, so the first request can be slow. CPU monitoring exits the process at the configured threshold; Render manages process restarts. Use a paid always-on plan for reliable availability.
+
 ## Try it with Postman
 
 Import `postman_collection.json`. Send **Upload sample workbook** and choose `sample-policies.xlsx` for its `file` field. The sample uses fictional data; the upload should report 3 rows imported.
