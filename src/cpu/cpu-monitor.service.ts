@@ -1,9 +1,11 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import * as os from 'node:os';
+import { performance } from 'node:perf_hooks';
 
 @Injectable()
 export class CpuMonitorService implements OnModuleInit, OnModuleDestroy {
-  private previous = os.cpus().map((cpu) => ({ ...cpu.times }));
+  private previousCpuUsage = process.cpuUsage();
+  private previousSampleAt = performance.now();
   private timer?: NodeJS.Timeout;
 
   onModuleInit(): void {
@@ -18,25 +20,24 @@ export class CpuMonitorService implements OnModuleInit, OnModuleDestroy {
   }
 
   private checkCpu(threshold: number): void {
-    let idle = 0;
-    let total = 0;
-    os.cpus().forEach((cpu, index) => {
-      const previous = this.previous[index];
-      const current = cpu.times;
-      const idleDelta = current.idle - previous.idle;
-      const totalDelta = Object.keys(current).reduce(
-        (sum, key) => sum + current[key as keyof typeof current] - previous[key as keyof typeof previous],
-        0,
-      );
-      idle += idleDelta;
-      total += totalDelta;
-      this.previous[index] = { ...current };
-    });
+    const now = performance.now();
+    const elapsedMicroseconds = (now - this.previousSampleAt) * 1000;
+    const currentCpuUsage = process.cpuUsage();
+    const usedMicroseconds =
+      currentCpuUsage.user - this.previousCpuUsage.user +
+      currentCpuUsage.system - this.previousCpuUsage.system;
 
-    const usage = total > 0 ? (1 - idle / total) * 100 : 0;
+    this.previousCpuUsage = currentCpuUsage;
+    this.previousSampleAt = now;
+
+    const cpuCount = Math.max(1, os.availableParallelism());
+    const usage = elapsedMicroseconds > 0
+      ? (usedMicroseconds / (elapsedMicroseconds * cpuCount)) * 100
+      : 0;
     if (usage >= threshold) {
       console.error(
-        'Host CPU at ' + usage.toFixed(1) + '% exceeds ' + threshold + '%. Exiting for supervisor restart.',
+        'Node process CPU at ' + usage.toFixed(1) + '% exceeds ' + threshold +
+          '%. Exiting for supervisor restart.',
       );
       process.exit(1);
     }
