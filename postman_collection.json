@@ -6,11 +6,13 @@
   },
   "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
   "item": [
-    { "name": "Health check", "request": { "method": "GET", "url": "{{baseUrl}}/health" } },
+    { "name": "Health check", "request": { "method": "GET", "url": "{{baseUrl}}/api/health" } },
     { "name": "Upload sample workbook", "request": { "method": "POST", "body": { "mode": "formdata", "formdata": [{ "key": "file", "type": "file", "src": "", "description": "Select sample-policies.xlsx from this project folder" }] }, "url": "{{baseUrl}}/api/upload" } },
     { "name": "Search Alice policies", "request": { "method": "GET", "url": "{{baseUrl}}/api/policies/search?username=Alice" } },
     { "name": "Aggregate policies by user", "request": { "method": "GET", "url": "{{baseUrl}}/api/policies/by-user" } },
     { "name": "Schedule sample message", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"message\": \"Sample reminder\",\n  \"day\": \"2026-10-03\",\n  \"time\": \"14:30\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/messages" } }
   ]
 }
+
+
 
