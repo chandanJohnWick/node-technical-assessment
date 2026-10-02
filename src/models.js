@@ -1,0 +1,10 @@
+const mongoose = require('mongoose');
+const schema = (fields) => new mongoose.Schema(fields, { timestamps: true, strict: false });
+const Agent = mongoose.model('Agent', schema({ agentName: String }));
+const User = mongoose.model('User', schema({ firstName: { type: String, index: true }, dob: Date, address: String, phoneNumber: String, state: String, zipCode: String, email: { type: String, index: true }, gender: String, userType: String, agentId: mongoose.Schema.Types.ObjectId, accountId: mongoose.Schema.Types.ObjectId }));
+const Account = mongoose.model('Account', schema({ accountName: String }));
+const Lob = mongoose.model('Lob', schema({ categoryName: String }));
+const Carrier = mongoose.model('Carrier', schema({ companyName: String }));
+const Policy = mongoose.model('Policy', schema({ policyNumber: { type: String, index: true }, policyStartDate: Date, policyEndDate: Date, policyCategoryId: mongoose.Schema.Types.ObjectId, companyId: mongoose.Schema.Types.ObjectId, userId: { type: mongoose.Schema.Types.ObjectId, index: true } }));
+const ScheduledMessage = mongoose.model('ScheduledMessage', schema({ message: String, scheduledAt: { type: Date, index: true }, deliveredAt: Date }));
+module.exports = { Agent, User, Account, Lob, Carrier, Policy, ScheduledMessage };
