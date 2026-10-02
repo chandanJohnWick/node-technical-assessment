@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: policy-assessment-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: CPU_LIMIT_PERCENT
+        value: "70"
+      - key: CPU_CHECK_INTERVAL_MS
+        value: "5000"
+      - key: UPLOAD_MAX_BYTES
+        value: "20971520"
