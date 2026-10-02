@@ -12,11 +12,16 @@ async function bootstrap(): Promise<void> {
     new FastifyAdapter({ logger: true, bodyLimit: 1024 * 1024 }),
   );
   const config = app.get(ConfigService);
+  // Environment values are strings; Fastify's multipart parser requires a number.
+  const uploadMaxBytes = Number(config.get<string | number>('UPLOAD_MAX_BYTES') ?? 20 * 1024 * 1024);
+  if (!Number.isSafeInteger(uploadMaxBytes) || uploadMaxBytes <= 0) {
+    throw new Error('UPLOAD_MAX_BYTES must be a positive integer');
+  }
 
   await app.register(multipart, {
     limits: {
       files: 1,
-      fileSize: config.get<number>('UPLOAD_MAX_BYTES', 20 * 1024 * 1024),
+      fileSize: uploadMaxBytes,
     },
   });
   app.setGlobalPrefix('api');
