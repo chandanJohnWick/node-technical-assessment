@@ -22,7 +22,11 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
-  const port = config.get<number>('PORT', 3000);
+  // Environment variables are strings; coerce Render's PORT to a TCP port number.
+  const port = Number(config.get<string | number>('PORT', 3000));
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error('PORT must be an integer between 1 and 65535');
+  }
   await app.listen(port, '0.0.0.0');
   console.log('Policy API listening on port ' + port);
 }
