@@ -11,6 +11,8 @@ JavaScript/Node.js REST API for importing policy spreadsheets into MongoDB, find
 
 The sample workbook is `sample-policies.xlsx`; it contains synthetic data only: Alice has two policies and Bob has one. Uploading is repeat-safe for matching email addresses and policy numbers.
 
+Import `postman_collection.json` in Postman for ready-made requests, then follow the steps below.
+
 ## Postman walkthrough
 
 1. **Upload the sheet**: `POST http://localhost:3000/api/upload`. Select **Body → form-data**, add key `file`, change its type from Text to **File**, and choose `sample-policies.xlsx`. Expected response: `{"imported":3}`.
@@ -44,3 +46,5 @@ The monitor samples host-wide CPU counters every five seconds by default and exi
 ## Notes
 
 The original assessment sample sheet was not available, so the importer uses common header aliases; adjust the alias map in `src/import-worker.js` if needed. Agent and Account link from User by IDs; Policy references LOB, Carrier, and User IDs. The scheduled-message endpoint stores the record and due timestamp; connect a delivery action if external message delivery is expected. No live hosting deployment or MongoDB credentials are included.
+
+
