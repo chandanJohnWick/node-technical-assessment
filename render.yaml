@@ -3,7 +3,7 @@ services:
     name: policy-assessment-api
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build && npm prune --omit=dev
     startCommand: npm run start:prod
     healthCheckPath: /api/health
     envVars:
