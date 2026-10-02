@@ -13,3 +13,4 @@
     { "name": "Schedule sample message", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"message\": \"Sample reminder\",\n  \"day\": \"2026-10-03\",\n  \"time\": \"14:30\"\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/messages" } }
   ]
 }
+
